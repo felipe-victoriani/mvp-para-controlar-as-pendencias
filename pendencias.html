@@ -39,27 +39,52 @@
       </div>
       <form id="pendenciaForm" class="card">
         <h2>Adicionar Pendência</h2>
-        <input
-          type="text"
-          id="pacienteNome"
-          placeholder="Nome do Paciente"
-          required
-        />
-        <input
-          type="text"
-          id="pacienteTelefone"
-          placeholder="Telefone (99) 99999-9999"
-          required
-        />
-        <input type="date" id="dataVisita" required />
-        <input type="text" id="convenio" placeholder="Convênio (opcional)" />
-        <input type="text" id="numeroCarteira" placeholder="Nº da Carteira" />
-        <input
-          type="text"
-          id="responsavelPendencia"
-          placeholder="Responsável pela Pendência"
-          required
-        />
+        <div style="display: flex; gap: 10px; margin-bottom: 10px">
+          <input
+            type="text"
+            id="pacienteNome"
+            placeholder="Nome do Paciente"
+            required
+            style="flex: 1"
+          />
+          <input
+            type="text"
+            id="pacienteTelefone"
+            placeholder="Telefone (99) 99999-9999"
+            required
+            style="flex: 1"
+          />
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px">
+          <input
+            type="date"
+            id="dataVisita"
+            placeholder="Data que veio"
+            required
+            style="flex: 1"
+          />
+          <input
+            type="text"
+            id="responsavelPendencia"
+            placeholder="Responsável pela Pendência"
+            required
+            style="flex: 1"
+          />
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 10px">
+          <input
+            type="text"
+            id="convenio"
+            placeholder="Convênio (opcional)"
+            style="flex: 1"
+          />
+          <input
+            type="text"
+            id="numeroCarteira"
+            placeholder="Nº da Carteira"
+            style="flex: 1"
+          />
+        </div>
         <textarea
           id="pendenciaTexto"
           placeholder="Descrição da Pendência"
