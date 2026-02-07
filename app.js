@@ -32,16 +32,16 @@ function guardRoute() {
         renderPendencias();
       }
     } else if (window.location.pathname.includes("index.html")) {
-      if (user) {
-        window.location.href = "pendencias.html";
-      }
+      // Não redireciona se já estiver logado
     }
   });
 }
 
 // Login
 function login(email, password) {
-  return auth.signInWithEmailAndPassword(email, password);
+  return auth.signInWithEmailAndPassword(email, password).then(() => {
+    window.location.href = "pendencias.html";
+  });
 }
 
 // Registro
