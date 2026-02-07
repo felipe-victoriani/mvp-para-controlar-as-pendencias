@@ -120,6 +120,16 @@ function renderPendencias(filter = "pendentes", search = "") {
       ...pendencias[id],
     }));
 
+    // Calcular totais globais
+    const totalPendentes = pendenciasArray.filter(
+      (p) => p.status === "PENDENTE",
+    ).length;
+    const totalResolvidas = pendenciasArray.filter(
+      (p) => p.status === "RESOLVIDA",
+    ).length;
+    document.getElementById("totalPendentes").textContent = totalPendentes;
+    document.getElementById("totalResolvidas").textContent = totalResolvidas;
+
     // Filtrar por status
     let filtered = pendenciasArray;
     if (filter === "pendentes") {
@@ -149,13 +159,7 @@ function renderPendencias(filter = "pendentes", search = "") {
     const tbody = document.getElementById("pendenciasBody");
     tbody.innerHTML = "";
 
-    let totalPendentes = 0;
-    let totalResolvidas = 0;
-
     filtered.forEach((p) => {
-      if (p.status === "PENDENTE") totalPendentes++;
-      else totalResolvidas++;
-
       const dias = calcDias(p.data_visita);
       const rowClass =
         dias > 15 ? "atraso-alto" : dias > 7 ? "atraso-medio" : "";
@@ -177,9 +181,6 @@ function renderPendencias(filter = "pendentes", search = "") {
             `;
       tbody.innerHTML += row;
     });
-
-    document.getElementById("totalPendentes").textContent = totalPendentes;
-    document.getElementById("totalResolvidas").textContent = totalResolvidas;
   });
 }
 
