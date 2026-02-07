@@ -256,3 +256,62 @@ header {
     margin-top: 10px;
   }
 }
+
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+  .login-container {
+    max-width: 95vw;
+    margin: 30px 2vw;
+    padding: 10px;
+  }
+  .container {
+    max-width: 100vw;
+    padding: 0 5px;
+  }
+  .summary-item,
+  .card {
+    padding: 8px;
+    font-size: 15px;
+  }
+  .responsive-table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .responsive-table thead {
+    display: none;
+  }
+  .responsive-table tr {
+    display: block;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #fbb1d3;
+  }
+  .responsive-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    border: none;
+    position: relative;
+  }
+  .responsive-table td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #d16ba5;
+    margin-right: 8px;
+    min-width: 90px;
+    display: inline-block;
+  }
+  .filters button,
+  #loginForm button,
+  .card button,
+  #logoutBtn,
+  .delete-btn {
+    width: 100%;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+}
