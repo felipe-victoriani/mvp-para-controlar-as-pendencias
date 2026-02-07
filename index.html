@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pendências da Clínica</title>
+    <title>Login - Pendências da Clínica</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <!-- Firebase CDN -->
@@ -12,86 +12,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   </head>
   <body>
-    <header>
+    <div class="login-container">
       <h1>Pendências da Clínica</h1>
-      <div class="user-info">
-        <span id="userEmail"></span>
-        <button id="logoutBtn">Sair</button>
-      </div>
-    </header>
-    <div class="container">
-      <div class="summary">
-        <div class="summary-item">
-          <strong>Total Pendentes:</strong> <span id="totalPendentes">0</span>
-        </div>
-        <div class="summary-item">
-          <strong>Total Resolvidas:</strong> <span id="totalResolvidas">0</span>
-        </div>
-      </div>
-      <div class="filters">
-        <button id="filterPendentes" class="active">Pendentes</button>
-        <button id="filterResolvidas">Resolvidas</button>
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Buscar por paciente ou telefone"
-        />
-      </div>
-      <form id="pendenciaForm" class="card">
-        <h2>Adicionar Pendência</h2>
-        <input
-          type="text"
-          id="pacienteNome"
-          placeholder="Nome do Paciente"
-          required
-        />
-        <input
-          type="text"
-          id="pacienteTelefone"
-          placeholder="Telefone (99) 99999-9999"
-          required
-        />
-        <input type="date" id="dataVisita" required />
-        <input type="text" id="convenio" placeholder="Convênio (opcional)" />
-        <input type="text" id="numeroCarteira" placeholder="Nº da Carteira" />
-        <input
-          type="text"
-          id="responsavelPendencia"
-          placeholder="Responsável pela Pendência"
-          required
-        />
-        <textarea
-          id="pendenciaTexto"
-          placeholder="Descrição da Pendência"
-          required
-        ></textarea>
-        <button type="submit">Cadastrar</button>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Senha" required />
+        <button type="submit" id="loginBtn">Entrar</button>
       </form>
-      <table id="pendenciasTable" class="responsive-table">
-        <thead>
-          <tr>
-            <th>Paciente</th>
-            <th>Telefone</th>
-            <th>Data que veio</th>
-            <th>Convênio</th>
-            <th>Nº da Carteira</th>
-            <th>Pendência</th>
-            <th>Responsável</th>
-            <th>Dias em aberto</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="pendenciasBody"></tbody>
-      </table>
+      <div id="errorMessage" class="error"></div>
     </div>
     <script src="app.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        if (typeof guardRoute === "function") {
-          guardRoute();
-        }
-      });
-    </script>
   </body>
 </html>

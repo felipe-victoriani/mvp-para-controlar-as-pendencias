@@ -23,17 +23,17 @@ const { auth, db } = initFirebase();
 // Verificar rota (guard)
 function guardRoute() {
   auth.onAuthStateChanged((user) => {
-    if (window.location.pathname.includes("index.html")) {
+    if (window.location.pathname.includes("pendencias.html")) {
       if (!user) {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       } else {
         document.getElementById("userEmail").textContent =
           `Logado como: ${user.email}`;
         renderPendencias();
       }
-    } else if (window.location.pathname.includes("login.html")) {
+    } else if (window.location.pathname.includes("index.html")) {
       if (user) {
-        window.location.href = "index.html";
+        window.location.href = "pendencias.html";
       }
     }
   });
