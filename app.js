@@ -81,6 +81,37 @@ function maskPhone(input) {
   input.value = value;
 }
 
+// Converter arquivo para Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+
+    // Validar tamanho (2MB - limite seguro para Realtime Database)
+    if (file.size > 2 * 1024 * 1024) {
+      reject(new Error("Arquivo muito grande. Máximo: 2MB"));
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve({
+        base64: reader.result,
+        nome: file.name,
+        tipo: file.type,
+        tamanho: file.size,
+      });
+    };
+
+    reader.onerror = (error) => reject(error);
+
+    reader.readAsDataURL(file);
+  });
+}
+
 // Adicionar pendência
 function addPendencia(
   pacienteNome,
@@ -90,9 +121,10 @@ function addPendencia(
   numeroCarteira,
   responsavelPendencia,
   pendenciaTexto,
+  arquivo = null,
 ) {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) return Promise.reject("Usuário não autenticado");
 
   const pendencia = {
     paciente_nome: pacienteNome,
@@ -105,7 +137,20 @@ function addPendencia(
     status: "PENDENTE",
     criado_em: firebase.database.ServerValue.TIMESTAMP,
     resolvido_em: null,
+    anexo: null,
   };
+
+  // Se houver arquivo, converter para Base64
+  if (arquivo) {
+    return fileToBase64(arquivo)
+      .then((anexoInfo) => {
+        pendencia.anexo = anexoInfo;
+        return db.ref("pendencias").push(pendencia);
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
 
   return db.ref("pendencias").push(pendencia);
 }
@@ -165,6 +210,11 @@ function renderPendencias(filter = "pendentes", search = "") {
         dias > 15 ? "atraso-alto" : dias > 7 ? "atraso-medio" : "";
       const whatsappLink = `https://wa.me/55${p.paciente_telefone.replace(/\D/g, "")}`;
 
+      // Link do anexo (usando Base64)
+      const anexoHtml = p.anexo
+        ? `<a href="${p.anexo.base64}" download="${p.anexo.nome}" title="${escapeHTML(p.anexo.nome)}" style="font-size: 20px; text-decoration: none">📎</a>`
+        : "-";
+
       const row = `
                 <tr class="${rowClass}">
                     <td>${escapeHTML(p.paciente_nome)}</td>
@@ -175,6 +225,7 @@ function renderPendencias(filter = "pendentes", search = "") {
                     <td>${escapeHTML(p.pendencia_texto)}</td>
                     <td>${escapeHTML(p.responsavel_pendencia || "-")}</td>
                     <td>${dias}</td>
+                    <td>${anexoHtml}</td>
                     <td><input type="checkbox" class="checkbox" ${p.status === "RESOLVIDA" ? "checked" : ""} onchange="toggleStatus('${p.id}')"></td>
                     <td><button class="delete-btn" onclick="deletePendencia('${p.id}')">Excluir</button></td>
                 </tr>
@@ -205,7 +256,13 @@ function toggleStatus(id) {
 // Deletar pendência
 function deletePendencia(id) {
   if (confirm("Tem certeza que deseja excluir esta pendência?")) {
-    db.ref(`pendencias/${id}`).remove();
+    // Com Base64, só precisa deletar do banco (anexo já está lá dentro)
+    db.ref(`pendencias/${id}`)
+      .remove()
+      .catch((error) => {
+        console.error("Erro ao deletar:", error);
+        alert("Erro ao deletar pendência");
+      });
   }
 }
 
@@ -245,6 +302,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (pendenciaForm) {
     pendenciaForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      const submitBtn = document.getElementById("submitBtn");
+      const originalText = submitBtn.textContent;
+
+      // Desabilitar botão durante upload
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Cadastrando...";
+
       const pacienteNome = document.getElementById("pacienteNome").value;
       const pacienteTelefone =
         document.getElementById("pacienteTelefone").value;
@@ -255,6 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "responsavelPendencia",
       ).value;
       const pendenciaTexto = document.getElementById("pendenciaTexto").value;
+      const anexoInput = document.getElementById("anexoArquivo");
+      const arquivo = anexoInput.files[0] || null;
 
       addPendencia(
         pacienteNome,
@@ -264,9 +330,18 @@ document.addEventListener("DOMContentLoaded", () => {
         numeroCarteira,
         responsavelPendencia,
         pendenciaTexto,
-      ).then(() => {
-        pendenciaForm.reset();
-      });
+        arquivo,
+      )
+        .then(() => {
+          pendenciaForm.reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        })
+        .catch((error) => {
+          alert("Erro ao cadastrar: " + error.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        });
     });
 
     // Máscara telefone

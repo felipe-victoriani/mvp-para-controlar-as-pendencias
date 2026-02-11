@@ -90,7 +90,28 @@
           placeholder="Descrição da Pendência"
           required
         ></textarea>
-        <button type="submit">Cadastrar</button>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+          "
+        >
+          <label for="anexoArquivo" style="font-weight: 500"
+            >📎 Anexar documento:</label
+          >
+          <input
+            type="file"
+            id="anexoArquivo"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+            style="flex: 1"
+          />
+          <small style="color: #666; font-size: 12px"
+            >PDF, Excel, Word ou Imagens (máx. 2MB)</small
+          >
+        </div>
+        <button type="submit" id="submitBtn">Cadastrar</button>
       </form>
       <table id="pendenciasTable" class="responsive-table">
         <thead>
@@ -103,6 +124,7 @@
             <th>Pendência</th>
             <th>Responsável</th>
             <th>Dias em aberto</th>
+            <th>Anexo</th>
             <th>Status</th>
             <th>Ações</th>
           </tr>
